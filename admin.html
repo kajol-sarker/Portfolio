@@ -1,0 +1,144 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Portfolio Admin | Kajol Sarker</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    try { document.documentElement.dataset.theme = localStorage.getItem('portfolio-theme') || 'dark'; }
+    catch (error) { document.documentElement.dataset.theme = 'dark'; }
+  </script>
+  <style>
+    body.admin-page { min-height:100vh; padding:40px 18px 64px; color:#aab4ca; background:radial-gradient(ellipse at 8% 0%,rgba(106,92,255,.17),transparent 35%),#0b1020; }
+    .admin-shell { max-width:1000px; margin:auto; }
+    .admin-header { display:flex; align-items:center; justify-content:space-between; gap:20px; margin-bottom:26px; }
+    .admin-header h1 { color:#f4f6ff; font-size:clamp(30px,5vw,44px); margin:0; }
+    .admin-header p { margin:5px 0 0; }
+    .admin-card { padding:26px; margin:18px 0; border:1px solid rgba(167,139,250,.18); border-radius:20px; background:linear-gradient(145deg,rgba(20,29,50,.96),rgba(14,20,37,.96)); box-shadow:0 18px 48px rgba(0,0,0,.2); }
+    .admin-card h2 { color:#f4f6ff; font-size:23px; margin:0 0 16px; }
+    .admin-form-grid { display:grid; grid-template-columns:1fr 2fr; gap:14px; }
+    .admin-field { margin-bottom:14px; }
+    .admin-field label { display:block; margin:0 0 6px; color:#e6eafa; font-weight:600; }
+    .admin-field input,.admin-field select,.admin-field textarea { width:100%; padding:11px 13px; color:#f4f6ff; border:1px solid rgba(255,255,255,.13); border-radius:10px; background:#0b1020; outline:none; }
+    .admin-field input:focus,.admin-field select:focus,.admin-field textarea:focus { border-color:#43e4d0; box-shadow:0 0 0 3px rgba(67,228,208,.12); }
+    .admin-field textarea { min-height:140px; resize:vertical; }
+    .admin-actions { display:flex; align-items:center; flex-wrap:wrap; gap:10px; }
+    .admin-secondary { display:inline-flex; align-items:center; justify-content:center; padding:10px 18px; border:1px solid rgba(255,255,255,.15); border-radius:999px; color:#e6eafa; cursor:pointer; background:rgba(255,255,255,.06); }
+    .admin-secondary:hover { color:#43e4d0; border-color:#43e4d0; }
+    .admin-message { min-height:25px; margin:12px 0 0; color:#43e4d0; }
+    .admin-message.error { color:#ff8d79; }
+    .entry-list { display:grid; gap:12px; }
+    .entry { padding:16px; display:flex; align-items:flex-start; justify-content:space-between; gap:18px; border:1px solid rgba(255,255,255,.09); border-radius:14px; background:rgba(255,255,255,.035); }
+    .entry h3 { color:#f4f6ff; margin:0 0 4px; font-size:18px; }
+    .entry p { white-space:pre-wrap; overflow-wrap:anywhere; margin:7px 0 0; }
+    .entry-meta { color:#43e4d0; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; }
+    .entry-actions { display:flex; gap:8px; flex-shrink:0; }
+    .entry-actions button { padding:6px 11px; border-radius:8px; }
+    .entry-due { color:#ffc66d; font-size:13px; font-weight:600; }
+    .entry-file { display:inline-flex; margin-top:10px; }
+    .mfa-secret { display:block; margin:12px 0; padding:12px; border-radius:10px; background:rgba(255,255,255,.06); color:#8ce5dc; overflow-wrap:anywhere; }
+    .security-warning { padding:12px 14px; border:1px solid rgba(255,198,109,.28); border-radius:12px; color:#ffd899; background:rgba(255,198,109,.07); }
+    .admin-toolbar { display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+    .entry-filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
+    .entry-filter { padding:7px 12px; border:1px solid rgba(255,255,255,.12); border-radius:999px; color:#d7e0f0; background:rgba(255,255,255,.04); cursor:pointer; }
+    .entry-filter.active { color:#07151c; background:#43e4d0; border-color:#43e4d0; }
+    html[data-theme="light"] body.admin-page { color:#4c5a71; background:#f4f7fb; }
+    html[data-theme="light"] .admin-header h1, html[data-theme="light"] .admin-card h2, html[data-theme="light"] .entry h3 { color:#1e2b42; }
+    html[data-theme="light"] .admin-card { border-color:rgba(40,65,103,.12); background:#fff; box-shadow:0 16px 42px rgba(30,52,82,.07); }
+    html[data-theme="light"] .admin-field label { color:#35445d; }
+    html[data-theme="light"] .admin-field input, html[data-theme="light"] .admin-field select, html[data-theme="light"] .admin-field textarea { color:#263651; border-color:rgba(29,51,83,.2); background:#f8fafc; }
+    html[data-theme="light"] .admin-secondary, html[data-theme="light"] .entry-filter { color:#35445d; border-color:rgba(29,51,83,.18); background:#f4f7fb; }
+    html[data-theme="light"] .entry-filter.active { color:#fff; background:#087f83; border-color:#087f83; }
+    html[data-theme="light"] .entry { border-color:rgba(40,65,103,.12); background:#f8fafc; }
+    html[data-theme="light"] .admin-header p, html[data-theme="light"] .entry p { color:#53627a; }
+    [hidden] { display:none !important; }
+    @media(max-width:650px) { body.admin-page{padding:24px 14px;} .admin-header{align-items:flex-start;} .admin-card{padding:20px;} .admin-form-grid{grid-template-columns:1fr;gap:0;} .entry{display:block;} .entry-actions{margin-top:12px;} }
+  </style>
+</head>
+<body class="admin-page">
+  <main class="admin-shell">
+    <header class="admin-header">
+      <div><h1>Private admin</h1><p>Manage your profile, notes, reminders, and private messages.</p></div>
+      <div class="admin-actions"><button class="admin-secondary" id="admin-theme-toggle" type="button" aria-pressed="false">Light mode</button><a class="admin-secondary" href="index.html">View portfolio</a></div>
+    </header>
+    <section class="admin-card" id="setup-panel" hidden aria-labelledby="setup-heading">
+      <h2 id="setup-heading">Connect your private database</h2>
+      <p>This admin page is ready, but it can’t save records until your Supabase project is connected.</p>
+      <p>Follow the setup steps in <a href="ADMIN_SETUP.md">ADMIN_SETUP.md</a>, then add the project URL and publishable key to <code>admin-config.js</code>.</p>
+    </section>
+    <section class="admin-card" id="login-panel" aria-labelledby="login-heading">
+      <h2 id="login-heading">Sign in</h2>
+      <p>We’ll email you a secure one-time sign-in link.</p>
+      <form id="login-form">
+        <div class="admin-field"><label for="login-email">Admin email</label><input id="login-email" type="email" autocomplete="email" required></div>
+        <button class="btn btn-primary" type="submit">Send sign-in link</button>
+      </form>
+      <p class="admin-message" id="login-message" role="status"></p>
+    </section>
+    <section class="admin-card" id="mfa-panel" hidden aria-labelledby="mfa-heading">
+      <h2 id="mfa-heading">Authenticator verification</h2>
+      <p id="mfa-instructions">Enter the current six-digit code from your authenticator app.</p>
+      <p id="mfa-secret-label" hidden>If this is your first setup, add this key to your authenticator app, then enter its six-digit code:</p>
+      <code class="mfa-secret" id="mfa-secret" hidden></code>
+      <form id="mfa-form">
+        <div class="admin-field"><label for="mfa-code">Authenticator code</label><input id="mfa-code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" minlength="6" maxlength="6" required></div>
+        <button class="btn btn-primary" type="submit">Verify and continue</button>
+      </form>
+      <p class="admin-message" id="mfa-message" role="status"></p>
+    </section>
+    <section id="dashboard" hidden>
+      <div class="admin-header"><p id="signed-in-as"></p><button class="admin-secondary" id="sign-out" type="button">Sign out</button></div>
+      <p class="security-warning">Do not store passwords, banking credentials, card/PIN details, or authenticator recovery codes here. Use a dedicated password manager and your bank’s secure app for those secrets.</p>
+      <section class="admin-card" aria-labelledby="entry-heading">
+        <h2 id="entry-heading">Add an item</h2>
+        <form id="entry-form">
+          <input id="entry-id" type="hidden">
+          <input id="entry-file-path" type="hidden">
+          <div class="admin-form-grid">
+            <div class="admin-field"><label for="entry-category">Type</label><select id="entry-category"><option value="academic">Academic record</option><option value="industry">Industry / job record</option><option value="career">Career record</option><option value="document">Private document</option><option value="license">License</option><option value="personal">Personal information</option><option value="contact">Contact information</option><option value="experience">Experience</option><option value="education">Education</option><option value="skills">Skills</option><option value="project">Project</option><option value="note">Private note</option><option value="alarm">Alarm / reminder</option><option value="message">Private message</option></select></div>
+            <div class="admin-field"><label for="entry-title">Title</label><input id="entry-title" type="text" maxlength="140" required placeholder="e.g. Current role"></div>
+          </div>
+          <div class="admin-field" id="alarm-field" hidden><label for="entry-alarm-at">Alarm time</label><input id="entry-alarm-at" type="datetime-local"></div>
+          <div class="admin-field"><label for="entry-file">Attach a private document (optional)</label><input id="entry-file" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.txt"><small>Stored in a private bucket; only the authenticated admin can download it. Max 15 MB.</small></div>
+          <div class="admin-field"><label for="entry-content">Details</label><textarea id="entry-content" maxlength="12000" required placeholder="Add the information or note…"></textarea></div>
+          <div class="admin-actions"><button class="btn btn-primary" id="save-entry" type="submit">Save entry</button><button class="admin-secondary" id="cancel-edit" type="button" hidden>Cancel edit</button></div>
+          <p class="admin-message" id="entry-message" role="status"></p>
+        </form>
+      </section>
+      <section class="admin-card" aria-labelledby="saved-heading">
+        <div class="admin-toolbar"><h2 id="saved-heading">Saved items</h2></div>
+        <div class="entry-filters" role="group" aria-label="Filter saved items">
+          <button class="entry-filter active" type="button" data-filter="all">All</button><button class="entry-filter" type="button" data-filter="academic">Academic</button><button class="entry-filter" type="button" data-filter="industry">Industry</button><button class="entry-filter" type="button" data-filter="career">Career</button><button class="entry-filter" type="button" data-filter="document">Documents</button><button class="entry-filter" type="button" data-filter="license">Licenses</button><button class="entry-filter" type="button" data-filter="note">Notes</button><button class="entry-filter" type="button" data-filter="alarm">Alarms</button><button class="entry-filter" type="button" data-filter="message">Messages</button>
+        </div>
+        <div class="entry-list" id="entry-list"></div>
+        <p class="admin-message" id="list-message" role="status"></p>
+        <p class="admin-message" id="alarm-message" role="status"></p>
+      </section>
+    </section>
+  </main>
+  <script src="admin-config.js"></script>
+  <script type="module" src="js/admin.js"></script>
+  <script>
+  (function () {
+    var button = document.getElementById('admin-theme-toggle');
+    var theme = document.documentElement.dataset.theme || 'dark';
+    function update() {
+      var light = theme === 'light';
+      document.documentElement.dataset.theme = theme;
+      button.textContent = light ? 'Dark mode' : 'Light mode';
+      button.setAttribute('aria-pressed', String(light));
+    }
+    update();
+    button.addEventListener('click', function () {
+      theme = theme === 'light' ? 'dark' : 'light';
+      try { localStorage.setItem('portfolio-theme', theme); } catch (error) { /* Theme still works for this visit. */ }
+      update();
+    });
+  })();
+  </script>
+</body>
+</html>
+

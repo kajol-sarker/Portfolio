@@ -1,0 +1,13 @@
+﻿# Admin setup
+
+The portfolio is static, so the private dashboard uses Supabase Auth, mandatory authenticator MFA, a Supabase Postgres table protected by row-level security, and a private document bucket. The dashboard is linked from the public navigation at `/admin.html`, but the data remains inaccessible unless both the allowlisted email and MFA checks pass. Entries are private and are not automatically published to the portfolio.
+
+1. Create a Supabase account and project at [supabase.com/dashboard](https://supabase.com/dashboard).
+2. In the project, run `supabase-admin-schema.sql` in the SQL Editor. If you ran an earlier version already, run the updated file again to add the academic, industry, career, document, license, alarm, and message fields plus the private file bucket. Its row-level policies allow only `mdmuntasir865@gmail.com` and require an AAL2 (MFA-verified) session.
+3. In Authentication, use email magic-link sign-in. Add `mdmuntasir865@gmail.com` as an Auth user, and disable public sign-ups so other accounts cannot register. Set the Site URL and add the deployed `/admin.html` URL under allowed redirect URLs.
+4. In the project Connect dialog, copy the Project URL and **publishable key**. Add both to `admin-config.js`. The publishable key is expected in browser code; never put a Supabase secret/service-role key in this project.
+5. Deploy the site, open `/admin.html`, and request a sign-in link at `mdmuntasir865@gmail.com`. On first sign-in, enroll a TOTP authenticator; the dashboard remains locked until you verify its code.
+
+The dashboard supports CRUD for academic, industry/job, career, document, license, note, reminder, message, and other profile records. Attachments use the private bucket and are restricted by storage RLS. Reminders notify only while the admin page is open and browser notifications are allowed. The dark/light control is available only in Admin and its choice is shared with the portfolio on this browser.
+
+Do not store passwords, bank account/card credentials, PINs, or authenticator recovery codes in this site. This static website is not a dedicated secrets vault, and no web application can promise “full security.” Use a reputable password manager for passwords and your bank’s own secure app for banking data. Store only the minimum necessary in license/document records. Supabase's [MFA guide](https://supabase.com/docs/guides/auth/auth-mfa), [private bucket guide](https://supabase.com/docs/guides/storage/buckets/fundamentals), [Project API keys guide](https://supabase.com/docs/guides/getting-started/api-keys), and [passwordless email sign-in guide](https://supabase.com/docs/guides/auth/auth-email-passwordless?language=js&queryGroups=language) explain the relevant controls.
